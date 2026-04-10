@@ -1,97 +1,87 @@
 @extends('layouts.app')
 
-@section('title', 'My Profile')
+@section('title', 'Visitor Details')
 
 @section('content')
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Profile Information -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-4">Profile Information</h3>
-        
-        @if(auth()->user()->canEdit())
-        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
-                <input type="text" name="name" value="{{ $user->name }}" class="w-full px-3 py-2 border rounded-lg" required>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
-                <input type="text" name="phone" value="{{ $user->phone }}" class="w-full px-3 py-2 border rounded-lg">
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Address</label>
-                <textarea name="address" class="w-full px-3 py-2 border rounded-lg" rows="3">{{ $user->address }}</textarea>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Avatar</label>
-                @if($user->avatar)
-                    <img src="{{ asset('storage/' . $user->avatar) }}" class="w-20 h-20 rounded-full mb-2">
-                @endif
-                <input type="file" name="avatar" accept="image/*" class="w-full px-3 py-2 border rounded-lg">
-            </div>
-            
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                Update Profile
-            </button>
-        </form>
-        @else
-        <div class="space-y-4">
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">Name</label>
-                <p class="text-gray-900">{{ $user->name }}</p>
-            </div>
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">Email</label>
-                <p class="text-gray-900">{{ $user->email }}</p>
-            </div>
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">Access Level</label>
-                <p class="text-gray-900">{{ $user->access_level_name }}</p>
-            </div>
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">Phone</label>
-                <p class="text-gray-900">{{ $user->phone ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">Address</label>
-                <p class="text-gray-900">{{ $user->address ?? '-' }}</p>
-            </div>
-        </div>
-        @endif
+<div class="bg-white rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Visitor Details</h3>
+        <a href="{{ route('visitors.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Back to List
+        </a>
     </div>
     
-    <!-- Change Password -->
-    @if(auth()->user()->canEdit())
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-4">Change Password</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Name</label>
+                <p class="text-gray-900">{{ $visitor->name }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Email</label>
+                <p class="text-gray-900">{{ $visitor->email ?? '-' }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Phone</label>
+                <p class="text-gray-900">{{ $visitor->phone }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">ID Card Number</label>
+                <p class="text-gray-900">{{ $visitor->id_card_number ?? '-' }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Company</label>
+                <p class="text-gray-900">{{ $visitor->company ?? '-' }}</p>
+            </div>
+        </div>
         
-        <form method="POST" action="{{ route('profile.update-password') }}">
+        <div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Purpose</label>
+                <p class="text-gray-900">{{ $visitor->purpose }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Person to Meet</label>
+                <p class="text-gray-900">{{ $visitor->person_to_meet }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Check In Time</label>
+                <p class="text-gray-900">{{ $visitor->check_in_time->format('d/m/Y H:i:s') }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Check Out Time</label>
+                <p class="text-gray-900">{{ $visitor->check_out_time ? $visitor->check_out_time->format('d/m/Y H:i:s') : '-' }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Status</label>
+                <p class="text-gray-900">
+                    <span class="px-2 py-1 text-xs rounded {{ $visitor->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                        {{ $visitor->status }}
+                    </span>
+                </p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-1">Registered By</label>
+                <p class="text-gray-900">{{ $visitor->registrar->name }}</p>
+            </div>
+        </div>
+    </div>
+    
+    @if($visitor->status == 'active')
+    <div class="mt-6 flex justify-end">
+        <form method="POST" action="{{ route('visitors.checkout', $visitor) }}">
             @csrf
-            @method('PUT')
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Current Password</label>
-                <input type="password" name="current_password" class="w-full px-3 py-2 border rounded-lg" required>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">New Password</label>
-                <input type="password" name="new_password" class="w-full px-3 py-2 border rounded-lg" required>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password</label>
-                <input type="password" name="new_password_confirmation" class="w-full px-3 py-2 border rounded-lg" required>
-            </div>
-            
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                Change Password
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                <i class="fas fa-sign-out-alt"></i> Check Out Visitor
             </button>
         </form>
     </div>

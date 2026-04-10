@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@visify.com',
+            'email' => 'admin@vas.com',
             'password' => Hash::make('password123'),
             'access_level' => 1,
             'phone' => '081234567890',
@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         
         User::create([
             'name' => 'Editor User',
-            'email' => 'editor@visify.com',
+            'email' => 'editor@vas.com',
             'password' => Hash::make('password123'),
             'access_level' => 2,
             'phone' => '081234567891',
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         
         User::create([
             'name' => 'Viewer User',
-            'email' => 'viewer@visify.com',
+            'email' => 'viewer@vas.com',
             'password' => Hash::make('password123'),
             'access_level' => 3,
             'phone' => '081234567892',
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Guest User',
-            'email' => 'guest@visify.com',
+            'email' => 'guest@vas.com',
             'password' => Hash::make('password123'),
             'access_level' => 4,
             'phone' => '081234567893',

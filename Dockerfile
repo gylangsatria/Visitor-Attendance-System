@@ -1,79 +1,34 @@
-version: '3.8'
+FROM php:8.2-fpm
 
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: visify-app
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - ./src:/var/www/html
-      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
-    networks:
-      - visify-network
-    depends_on:
-      - db
-      - redis
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    libpq-dev \
+    nginx \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-  web:
-    image: nginx:alpine
-    container_name: visify-nginx
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./src:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - visify-network
-    depends_on:
-      - app
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-  db:
-    image: mysql:8.0
-    container_name: visify-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: visify_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_PASSWORD: dbpassword
-      MYSQL_USER: visify_user
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - visify-network
+# Set working directory
+WORKDIR /var/www/html
 
-  redis:
-    image: redis:alpine
-    container_name: visify-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - visify-network
+# Copy existing application directory
+COPY ./src /var/www/html
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: visify-phpmyadmin
-    restart: unless-stopped
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-    networks:
-      - visify-network
-    depends_on:
-      - db
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-networks:
-  visify-network:
-    driver: bridge
-
-volumes:
-  db_data:
+EXPOSE 9000
+CMD ["php-fpm"]

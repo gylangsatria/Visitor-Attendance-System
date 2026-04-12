@@ -1,3 +1,7 @@
+@if(auth()->user()->access_level !== 1)
+    @php abort(403, 'Only Admin can create users.') @endphp
+@endif
+
 @extends('layouts.app')
 
 @section('title', 'Add User')

@@ -19,3 +19,6 @@ yarn-error.log
 /src/.env.backup
 .composer.lock
 /src/.composer.lock
+src/storage/*
+!src/storage/app/public
+src/bootstrap/cache/*

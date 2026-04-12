@@ -3,8 +3,30 @@
 @section('title', 'Edit User')
 
 @section('content')
+@php
+    $currentUser = auth()->user();
+    
+    // Cek akses: Editor tidak bisa edit Admin
+    if ($currentUser->access_level === 2 && $user->access_level === 1) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <strong class="font-bold">Access Denied!</strong>
+                <span class="block sm:inline"> Editor cannot edit Admin users.</span>
+              </div>';
+        return;
+    }
+    
+    // Editor tidak bisa edit user level 2 (Editor lain)
+    if ($currentUser->access_level === 2 && $user->access_level === 2) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <strong class="font-bold">Access Denied!</strong>
+                <span class="block sm:inline"> Editor cannot edit other Editor users.</span>
+              </div>';
+        return;
+    }
+@endphp
+
 <div class="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
-    <h3 class="text-lg font-semibold mb-4">Edit User</h3>
+    <h3 class="text-lg font-semibold mb-4">Edit User: {{ $user->name }}</h3>
     
     <form method="POST" action="{{ route('users.update', $user) }}">
         @csrf
@@ -13,30 +35,49 @@
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Name *</label>
             <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border rounded-lg" required>
+            @error('name')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Email *</label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full px-3 py-2 border rounded-lg" required>
+            @error('email')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Access Level *</label>
             <select name="access_level" class="w-full px-3 py-2 border rounded-lg" required>
-                <option value="2" {{ $user->access_level == 2 ? 'selected' : '' }}>Editor (Level 2)</option>
-                <option value="3" {{ $user->access_level == 3 ? 'selected' : '' }}>Viewer (Level 3)</option>
-                <option value="4" {{ $user->access_level == 4 ? 'selected' : '' }}>Guest (Level 4)</option>
+                @if($currentUser->access_level === 1)
+                    <!-- Admin bisa pilih semua level -->
+                    <option value="2" {{ $user->access_level == 2 ? 'selected' : '' }}>Editor (Level 2)</option>
+                    <option value="3" {{ $user->access_level == 3 ? 'selected' : '' }}>Viewer (Level 3)</option>
+                    <option value="4" {{ $user->access_level == 4 ? 'selected' : '' }}>Guest (Level 4)</option>
+                @else
+                    <!-- Editor hanya bisa set level 3-4 -->
+                    <option value="3" {{ $user->access_level == 3 ? 'selected' : '' }}>Viewer (Level 3)</option>
+                    <option value="4" {{ $user->access_level == 4 ? 'selected' : '' }}>Guest (Level 4)</option>
+                @endif
             </select>
         </div>
         
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full px-3 py-2 border rounded-lg">
+            @error('phone')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Address</label>
             <textarea name="address" class="w-full px-3 py-2 border rounded-lg" rows="3">{{ old('address', $user->address) }}</textarea>
+            @error('address')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="flex justify-end">

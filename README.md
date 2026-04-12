@@ -84,8 +84,8 @@ visitor-attendance-system/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/visitor-attendance-system.git
-cd visitor-attendance-system
+git clone https://github.com/gylangsatria/Visitor-Attendance-System.git
+cd Visitor-Attendance-System
 
 ```
 
@@ -141,3 +141,24 @@ docker exec -it vas-app chmod -R 775 storage bootstrap/cache
 | Database | `vas_db` |
 | Username | `vas_user` |
 | Password | `dbpassword` |
+
+
+### Troubleshoot
+1. Masuk ke container
+```bash
+docker exec -it vas-app bash
+```
+
+2. Fix permission langsung
+```bash
+chmod -R 777 storage/logs
+touch storage/logs/laravel.log
+chmod 666 storage/logs/laravel.log
+chown -R www-data:www-data storage bootstrap/cache
+```
+
+3. Clear
+```bash
+php artisan config:clear
+php artisan cache:clear
+```

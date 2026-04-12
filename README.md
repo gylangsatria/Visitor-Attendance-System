@@ -151,14 +151,29 @@ docker exec -it vas-app bash
 
 2. Fix permission langsung
 ```bash
-chmod -R 777 storage/logs
-touch storage/logs/laravel.log
-chmod 666 storage/logs/laravel.log
-chown -R www-data:www-data storage bootstrap/cache
-```
+# Buat semua folder
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
+mkdir -p storage/logs
+mkdir -p bootstrap/cache
 
-3. Clear
-```bash
+# Set permission ekstrim
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
+
+# Hapus cache lama
+rm -rf bootstrap/cache/*.php
+rm -rf storage/framework/views/*.php
+rm -rf storage/framework/cache/*.php
+
+# Generate fresh cache
+php artisan config:cache
+php artisan view:cache
+php artisan route:cache
+
+# Test
 php artisan config:clear
 php artisan cache:clear
+php artisan view:clear
 ```

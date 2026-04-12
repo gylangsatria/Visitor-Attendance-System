@@ -56,8 +56,8 @@ class User extends Authenticatable
         $levels = [
             1 => 'Administrator',
             2 => 'Editor',
-            3 => 'Viewer',
-            4 => 'Guest'
+            3 => 'Staff',
+            4 => 'Attendee'
         ];
         return $levels[$this->access_level] ?? 'Unknown';
     }

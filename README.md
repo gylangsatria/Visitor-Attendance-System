@@ -17,8 +17,8 @@ VAS is a modern web-based application designed to simplify visitor management an
 |-------|------|-------------|
 | 1 | Admin | Full access to all features (users, visitors, attendance) |
 | 2 | Editor | Manage visitors and attendance, cannot manage users |
-| 3 | Viewer | View-only access to assigned data |
-| 4 | Guest | Limited access, cannot register visitors |
+| 3 | Staf | View-only access to assigned data |
+| 4 | Attendee | Limited access, cannot register visitors |
 
 ## Tech Stack
 
@@ -91,8 +91,9 @@ cd visitor-attendance-system
 
 2. **Build and run containers**
 ```bash
-docker-compose build --no-cache
-docker-compose up -d
+docker compose build --no-cache
+cp .env.example src/.env
+docker compose up -d
 ```
 
 3. **Install PHP dependencies**
@@ -102,7 +103,6 @@ docker exec -it vas-app composer install
 
 4. **Configure environment**
 ```bash
-docker exec -it vas-app cp .env.example .env
 docker exec -it vas-app php artisan key:generate
 ```
 

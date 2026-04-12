@@ -44,7 +44,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::JcQQXIlEJ83n2fV9',
+            '_route' => 'generated::halobu7ToNYAaEYw',
           ),
           1 => NULL,
           2 => 
@@ -64,7 +64,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::j87fXldNYaZ0KQ8k',
+            '_route' => 'generated::uoPB9HBNaPzyrX2a',
           ),
           1 => NULL,
           2 => 
@@ -101,7 +101,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::z0ZDGEca9DiGzJUN',
+            '_route' => 'generated::Fb4H9lAhFhlKFSvk',
           ),
           1 => NULL,
           2 => 
@@ -417,7 +417,7 @@ app('router')->setCompiledRoutes(
     ),
     2 => 
     array (
-      0 => '{^(?|/users/([^/]++)(?|(*:25)|/edit(*:37)|(*:44))|/visitors/([^/]++)(?|(*:73)|/edit(*:85)|(*:92))|/attendances/([^/]++)(?|(*:124)|/edit(*:137)|(*:145)))/?$}sDu',
+      0 => '{^(?|/users/([^/]++)(?|(*:25)|/edit(*:37)|(*:44))|/visitors/([^/]++)(?|(*:73)|/(?|edit(*:88)|checkout(*:103))|(*:112))|/attendances/([^/]++)(?|(*:145)|/edit(*:158)|(*:166)))/?$}sDu',
     ),
     3 => 
     array (
@@ -532,7 +532,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      85 => 
+      88 => 
       array (
         0 => 
         array (
@@ -555,7 +555,29 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      92 => 
+      103 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'visitors.checkout',
+          ),
+          1 => 
+          array (
+            0 => 'visitor',
+          ),
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      112 => 
       array (
         0 => 
         array (
@@ -597,7 +619,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      124 => 
+      145 => 
       array (
         0 => 
         array (
@@ -620,7 +642,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      137 => 
+      158 => 
       array (
         0 => 
         array (
@@ -643,7 +665,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      145 => 
+      166 => 
       array (
         0 => 
         array (
@@ -737,7 +759,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::JcQQXIlEJ83n2fV9' => 
+    'generated::halobu7ToNYAaEYw' => 
     array (
       'methods' => 
       array (
@@ -753,13 +775,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:75:"function () {
     return \\response()->json([\'message\' => \'API working\']);
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005c80000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005d00000000000000000";}}',
         'namespace' => NULL,
         'prefix' => 'api',
         'where' => 
         array (
         ),
-        'as' => 'generated::JcQQXIlEJ83n2fV9',
+        'as' => 'generated::halobu7ToNYAaEYw',
       ),
       'fallback' => false,
       'defaults' => 
@@ -775,7 +797,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::j87fXldNYaZ0KQ8k' => 
+    'generated::uoPB9HBNaPzyrX2a' => 
     array (
       'methods' => 
       array (
@@ -791,13 +813,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:47:"function () {
     return \\redirect(\'/login\');
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005cb0000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005d30000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
         array (
         ),
-        'as' => 'generated::j87fXldNYaZ0KQ8k',
+        'as' => 'generated::uoPB9HBNaPzyrX2a',
       ),
       'fallback' => false,
       'defaults' => 
@@ -850,7 +872,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::z0ZDGEca9DiGzJUN' => 
+    'generated::Fb4H9lAhFhlKFSvk' => 
     array (
       'methods' => 
       array (
@@ -870,7 +892,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::z0ZDGEca9DiGzJUN',
+        'as' => 'generated::Fb4H9lAhFhlKFSvk',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1923,6 +1945,43 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'visitors.checkout' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'visitors/{visitor}/checkout',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+        ),
+        'uses' => 'App\\Http\\Controllers\\VisitorController@checkOut',
+        'controller' => 'App\\Http\\Controllers\\VisitorController@checkOut',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'visitors.checkout',
       ),
       'fallback' => false,
       'defaults' => 

@@ -22,3 +22,4 @@ yarn-error.log
 src/storage/*
 !src/storage/app/public
 src/bootstrap/cache/*
+/storage/logs/laravel.log

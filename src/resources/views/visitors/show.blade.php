@@ -76,15 +76,13 @@
         </div>
     </div>
     
-    @if($visitor->status == 'active')
-    <div class="mt-6 flex justify-end">
-        <form method="POST" action="{{ route('visitors.checkout', $visitor) }}">
-            @csrf
-            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                <i class="fas fa-sign-out-alt"></i> Check Out Visitor
-            </button>
-        </form>
-    </div>
+    @if(auth()->user()->access_level !== 4 && $visitor->status == 'active')
+    <form method="POST" action="{{ route('visitors.checkout', $visitor) }}" class="inline">
+        @csrf
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            <i class="fas fa-sign-out-alt"></i> Check Out
+        </button>
+    </form>
     @endif
 </div>
 @endsection

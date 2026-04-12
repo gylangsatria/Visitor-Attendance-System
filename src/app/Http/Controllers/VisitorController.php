@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class VisitorController extends Controller
 {
+    public function __construct()
+    {
+        // Guest (level 4) hanya bisa view, tidak bisa create, edit, checkout
+        $this->middleware('access:1,2,3')->only(['create', 'store', 'checkOut']);
+    }
+    
     public function index()
     {
         $user = auth()->user();
@@ -16,6 +22,7 @@ class VisitorController extends Controller
                 ->orderBy('check_in_time', 'desc')
                 ->paginate(15);
         } else {
+            // Viewer (level 3) dan Guest (level 4) hanya lihat milik sendiri
             $visitors = Visitor::where('registered_by', $user->id)
                 ->orderBy('check_in_time', 'desc')
                 ->paginate(15);
@@ -26,11 +33,21 @@ class VisitorController extends Controller
 
     public function create()
     {
+        // Cek apakah Guest (level 4)
+        if (auth()->user()->access_level === 4) {
+            abort(403, 'Guest users cannot register visitors.');
+        }
+        
         return view('visitors.create');
     }
 
     public function store(Request $request)
     {
+        // Cek apakah Guest (level 4)
+        if (auth()->user()->access_level === 4) {
+            abort(403, 'Guest users cannot register visitors.');
+        }
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email',
@@ -52,11 +69,35 @@ class VisitorController extends Controller
 
     public function show(Visitor $visitor)
     {
+        $user = auth()->user();
+        
+        // Guest (level 4) hanya bisa lihat visitor milik sendiri
+        if ($user->access_level === 4 && $visitor->registered_by !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        // Viewer (level 3) hanya bisa lihat visitor milik sendiri
+        if ($user->access_level === 3 && $visitor->registered_by !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
+        
         return view('visitors.show', compact('visitor'));
     }
 
     public function checkOut(Visitor $visitor)
     {
+        $user = auth()->user();
+        
+        // Guest (level 4) tidak bisa checkout
+        if ($user->access_level === 4) {
+            abort(403, 'Guest users cannot check out visitors.');
+        }
+        
+        // Viewer (level 3) hanya bisa checkout visitor milik sendiri
+        if ($user->access_level === 3 && $visitor->registered_by !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
+        
         if ($visitor->status === 'completed') {
             return back()->with('error', 'Visitor has already checked out!');
         }

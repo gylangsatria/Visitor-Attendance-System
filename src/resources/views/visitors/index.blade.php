@@ -6,9 +6,12 @@
 <div class="bg-white rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold">Visitor List</h3>
+        
+        @if(auth()->user()->access_level !== 4)
         <a href="{{ route('visitors.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
             <i class="fas fa-plus"></i> Register Visitor
         </a>
+        @endif
     </div>
     
     <div class="overflow-x-auto">
@@ -39,13 +42,16 @@
                         <a href="{{ route('visitors.show', $visitor) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
                             <i class="fas fa-eye"></i> View
                         </a>
-                        @if($visitor->status == 'active')
-                        <form method="POST" action="{{ route('visitors.checkout', $visitor) }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-red-600 hover:text-red-900">
-                                <i class="fas fa-sign-out-alt"></i> Check Out
-                            </button>
-                        </form>
+                        
+                        @if(auth()->user()->access_level !== 4)
+                            @if($visitor->status == 'active')
+                            <form method="POST" action="{{ route('visitors.checkout', $visitor) }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Check out this visitor?')">
+                                    <i class="fas fa-sign-out-alt"></i> Check Out
+                                </button>
+                            </form>
+                            @endif
                         @endif
                     </td>
                 </tr>

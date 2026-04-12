@@ -21,7 +21,9 @@
                     <div class="ml-6 flex space-x-8">
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600">Dashboard</a>
                         <a href="{{ route('attendances.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600">History Absensi</a>
+                        @if(auth()->user()->access_level !== 4)
                         <a href="{{ route('visitors.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600">Visitors</a>
+                        @endif
                         @if(auth()->user()->canEdit())
                         <a href="{{ route('users.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600">Manajemen User</a>
                         @endif

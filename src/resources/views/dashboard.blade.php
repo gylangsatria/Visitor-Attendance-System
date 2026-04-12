@@ -5,6 +5,8 @@
 @section('content')
 <div class="space-y-6">
     <!-- Stats Cards -->
+    <!-- Tutup akses Guest / user -->
+    @if(auth()->user()->access_level !== 4)
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
@@ -42,8 +44,9 @@
             </div>
         </div>
     </div>
+    @endif
     
-    <!-- Quick Actions -->
+    <!-- Quick Actions - Sembunyikan untuk Guest (level 4) -->
     <div class="bg-white rounded-lg shadow p-6">
         <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
         <div class="flex space-x-4">
@@ -59,9 +62,12 @@
                     <i class="fas fa-sign-out-alt"></i> Check Out
                 </button>
             </form>
+            
+            @if(auth()->user()->access_level !== 4)
             <a href="{{ route('visitors.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
                 <i class="fas fa-user-plus"></i> Register Visitor
             </a>
+            @endif
         </div>
     </div>
     

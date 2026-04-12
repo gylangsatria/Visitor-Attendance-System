@@ -2,6 +2,18 @@
     @php abort(403, 'Only Admin can create users.') @endphp
 @endif
 
+@if(auth()->user()->access_level === 4)
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+        <strong class="font-bold">Access Denied!</strong>
+        <span class="block sm:inline"> Guest users cannot register visitors.</span>
+    </div>
+    <div class="mt-4">
+        <a href="{{ route('visitors.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Back to Visitors
+        </a>
+    </div>
+@else
+
 @extends('layouts.app')
 
 @section('title', 'Add User')

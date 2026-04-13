@@ -72,11 +72,12 @@ class UserController extends Controller
             abort(403, 'Editor cannot create new users.');
         }
         
+        // Admin bisa membuat semua level termasuk Admin (level 1)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'access_level' => 'required|in:2,3,4',
+            'access_level' => 'required|in:1,2,3,4', // Sekarang termasuk level 1
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500'
         ]);
@@ -116,12 +117,12 @@ class UserController extends Controller
     {
         $currentUser = auth()->user();
         
-        // Admin bisa update semua
+        // Admin bisa update semua termasuk ke level 1
         if ($currentUser->access_level === 1) {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
-                'access_level' => 'required|in:1,2,3,4',
+                'access_level' => 'required|in:1,2,3,4', // Admin bisa set ke level 1
                 'phone' => 'nullable|string|max:20',
                 'address' => 'nullable|string|max:500'
             ]);
@@ -140,12 +141,10 @@ class UserController extends Controller
         
         // Editor: hanya bisa update user level 3 atau 4
         if ($currentUser->access_level === 2) {
-            // Cek apakah user yang diedit adalah level 1 atau 2
             if ($user->access_level === 1 || $user->access_level === 2) {
                 abort(403, 'Editor cannot update Admin or Editor users.');
             }
             
-            // Editor hanya bisa update level 3 atau 4, dan tidak bisa mengubah access_level
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
@@ -161,7 +160,7 @@ class UserController extends Controller
                 $validated['password'] = Hash::make($request->password);
             }
             
-            // Editor tidak bisa mengubah access_level, tetap di level 3 atau 4
+            // Editor tidak bisa mengubah access_level
             $user->update($validated);
             return redirect()->route('users.index')->with('success', 'User updated successfully!');
         }

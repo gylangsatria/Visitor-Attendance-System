@@ -13,20 +13,51 @@ class VisitorController extends Controller
         $this->middleware('access:1,2,3')->only(['create', 'store', 'checkOut']);
     }
     
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         
+        // Base query
         if ($user->isAdmin() || $user->isEditor()) {
-            $visitors = Visitor::with('registrar')
-                ->orderBy('check_in_time', 'desc')
-                ->paginate(15);
+            $query = Visitor::with('registrar');
         } else {
             // Viewer (level 3) dan Guest (level 4) hanya lihat milik sendiri
-            $visitors = Visitor::where('registered_by', $user->id)
-                ->orderBy('check_in_time', 'desc')
-                ->paginate(15);
+            $query = Visitor::where('registered_by', $user->id);
         }
+        
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('person_to_meet', 'like', "%{$search}%")
+                  ->orWhere('company', 'like', "%{$search}%")
+                  ->orWhere('purpose', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('id_card_number', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        // Filter by date range (check_in_time)
+        if ($request->filled('start_date')) {
+            $query->whereDate('check_in_time', '>=', $request->start_date);
+        }
+        
+        if ($request->filled('end_date')) {
+            $query->whereDate('check_in_time', '<=', $request->end_date);
+        }
+        
+        // Order by latest check in first
+        $query->orderBy('check_in_time', 'desc');
+        
+        // Paginate with 15 items per page and preserve query string
+        $visitors = $query->paginate(15)->appends($request->query());
         
         return view('visitors.index', compact('visitors'));
     }
@@ -50,7 +81,7 @@ class VisitorController extends Controller
         
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:20',
             'id_card_number' => 'nullable|string|max:50',
             'company' => 'nullable|string|max:255',
@@ -108,5 +139,89 @@ class VisitorController extends Controller
         ]);
 
         return redirect()->route('visitors.index')->with('success', 'Visitor checked out successfully!');
+    }
+    
+    // Optional: Method untuk export data (bonus)
+    public function export(Request $request)
+    {
+        $user = auth()->user();
+        
+        // Hanya admin dan editor yang bisa export
+        if (!$user->isAdmin() && !$user->isEditor()) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        // Build query sama seperti index
+        if ($user->isAdmin() || $user->isEditor()) {
+            $query = Visitor::with('registrar');
+        } else {
+            $query = Visitor::where('registered_by', $user->id);
+        }
+        
+        // Apply filters
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('person_to_meet', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        if ($request->filled('start_date')) {
+            $query->whereDate('check_in_time', '>=', $request->start_date);
+        }
+        
+        if ($request->filled('end_date')) {
+            $query->whereDate('check_in_time', '<=', $request->end_date);
+        }
+        
+        $visitors = $query->orderBy('check_in_time', 'desc')->get();
+        
+        // Export to CSV
+        $filename = 'visitors_export_' . date('Y-m-d_His') . '.csv';
+        $handle = fopen('php://output', 'w');
+        
+        // Add CSV headers
+        fputcsv($handle, [
+            'ID', 'Name', 'Email', 'Phone', 'ID Card Number', 'Company', 
+            'Purpose', 'Person to Meet', 'Check In Time', 'Check Out Time', 
+            'Status', 'Registered By'
+        ]);
+        
+        // Add data rows
+        foreach ($visitors as $visitor) {
+            fputcsv($handle, [
+                $visitor->id,
+                $visitor->name,
+                $visitor->email,
+                $visitor->phone,
+                $visitor->id_card_number,
+                $visitor->company,
+                $visitor->purpose,
+                $visitor->person_to_meet,
+                $visitor->check_in_time,
+                $visitor->check_out_time,
+                $visitor->status,
+                $visitor->registrar->name ?? 'N/A'
+            ]);
+        }
+        
+        fclose($handle);
+        
+        return response()->stream(
+            function() use ($filename, $visitors) {
+                // Implementation above
+            },
+            200,
+            [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]
+        );
     }
 }

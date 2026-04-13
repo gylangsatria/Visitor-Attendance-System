@@ -32,6 +32,7 @@ VAS is a modern web-based application designed to simplify visitor management an
 
 ## System Architecture
 
+```bash
 VAS uses a multi-container Docker setup:
 
 ┌─────────────────────────────────────────────────────────┐
@@ -48,7 +49,7 @@ VAS uses a multi-container Docker setup:
 │ │ (UI) │ │ (db_data)│ │
 │ └───────────┘ └──────────┘ │
 └─────────────────────────────────────────────────────────┘
-
+```
 
 - **app**: PHP 8.2-FPM container running Laravel application
 - **web**: Nginx Alpine web server (port 8080)
@@ -65,6 +66,7 @@ VAS uses a multi-container Docker setup:
 
 ### Project Structure
 
+```bash
 visitor-attendance-system/
 ├── src/                    # Laravel application source code
 │   ├── app/               # Application core
@@ -79,6 +81,7 @@ visitor-attendance-system/
 ├── Dockerfile             # PHP-FPM container definition
 ├── docker-compose.yml     # Docker services orchestration
 └── README.md             # Project documentation
+```
 
 ### Quick Start
 
@@ -142,6 +145,11 @@ docker exec -it vas-app chmod -R 775 storage bootstrap/cache
 | Username | `vas_user` |
 | Password | `dbpassword` |
 
+
+
+
+### Bug
+- Permission failed. 
 
 ### Troubleshoot
 1. Masuk ke container

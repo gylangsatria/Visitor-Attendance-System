@@ -131,9 +131,9 @@ docker exec -it vas-app chmod -R 775 storage bootstrap/cache
 
 | Role | Access Level | Email | Password |
 |------|-------------|-------|----------|
-| Admin | Level 1 | admin@vas.com | admin123 |
-| Editor | Level 2 | staff@vas.com | staff123 |
-| Viewer | Level 3 | user@vas.com | user123 |
+| Admin | Level 1 | admin@vas.com | password123 |
+| Editor | Level 2 | staff@vas.com | password123 |
+| Viewer | Level 3 | user@vas.com | password123 |
 
 ### Database Credentials
 

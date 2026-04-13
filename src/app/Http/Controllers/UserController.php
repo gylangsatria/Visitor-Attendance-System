@@ -13,19 +13,44 @@ class UserController extends Controller
         $this->middleware('access:1,2'); // Only admin and editor
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         
-        // Jika Editor, hanya lihat user dengan level > 1 (tidak bisa lihat Admin)
+        // Base query
         if ($user->access_level === 2) {
-            $users = User::where('access_level', '>', 1)
-                ->orderBy('access_level')
-                ->paginate(10);
+            // Editor: hanya lihat user dengan level > 1 (tidak bisa lihat Admin)
+            $query = User::where('access_level', '>', 1);
         } else {
             // Admin bisa lihat semua user
-            $users = User::orderBy('access_level')->paginate(10);
+            $query = User::query();
         }
+        
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by access level
+        if ($request->filled('access_level')) {
+            // Editor tidak bisa filter untuk access_level 1
+            if ($user->access_level === 2 && $request->access_level == 1) {
+                // Skip filter atau bisa diabaikan
+            } else {
+                $query->where('access_level', $request->access_level);
+            }
+        }
+        
+        // Order by access level then by name
+        $query->orderBy('access_level')->orderBy('name');
+        
+        // Paginate with 15 items per page and preserve query string
+        $users = $query->paginate(15)->appends($request->query());
         
         return view('users.index', compact('users'));
     }
@@ -96,10 +121,18 @@ class UserController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
-                'access_level' => 'required|in:2,3,4',
+                'access_level' => 'required|in:1,2,3,4',
                 'phone' => 'nullable|string|max:20',
                 'address' => 'nullable|string|max:500'
             ]);
+            
+            // Admin bisa update password jika diisi
+            if ($request->filled('password')) {
+                $request->validate([
+                    'password' => 'min:8|confirmed'
+                ]);
+                $validated['password'] = Hash::make($request->password);
+            }
             
             $user->update($validated);
             return redirect()->route('users.index')->with('success', 'User updated successfully!');
@@ -119,6 +152,14 @@ class UserController extends Controller
                 'phone' => 'nullable|string|max:20',
                 'address' => 'nullable|string|max:500'
             ]);
+            
+            // Editor bisa update password jika diisi
+            if ($request->filled('password')) {
+                $request->validate([
+                    'password' => 'min:8|confirmed'
+                ]);
+                $validated['password'] = Hash::make($request->password);
+            }
             
             // Editor tidak bisa mengubah access_level, tetap di level 3 atau 4
             $user->update($validated);
@@ -142,12 +183,63 @@ class UserController extends Controller
             return back()->with('error', 'Only Admin can delete users.');
         }
         
-        // Admin tidak bisa delete Admin lain (opsional)
+        // Admin tidak bisa delete Admin lain (opsional, bisa disesuaikan)
         if ($user->access_level === 1 && $currentUser->id !== $user->id) {
             return back()->with('error', 'Cannot delete other Admin users.');
         }
         
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+    }
+    
+    // Optional: Method untuk reset password (bonus)
+    public function resetPassword(Request $request, User $user)
+    {
+        $currentUser = auth()->user();
+        
+        // Hanya Admin yang bisa reset password
+        if ($currentUser->access_level !== 1) {
+            abort(403, 'Only Admin can reset user passwords.');
+        }
+        
+        $request->validate([
+            'password' => 'required|min:8|confirmed'
+        ]);
+        
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+        
+        return back()->with('success', 'Password reset successfully for ' . $user->name);
+    }
+    
+    // Optional: Method untuk bulk delete (bonus)
+    public function bulkDelete(Request $request)
+    {
+        $currentUser = auth()->user();
+        
+        // Hanya Admin yang bisa bulk delete
+        if ($currentUser->access_level !== 1) {
+            abort(403, 'Only Admin can perform bulk delete.');
+        }
+        
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+        
+        // Filter out current user and other admins
+        $userIds = array_filter($request->user_ids, function($id) use ($currentUser) {
+            $user = User::find($id);
+            return $user && $user->id !== $currentUser->id && $user->access_level !== 1;
+        });
+        
+        if (empty($userIds)) {
+            return back()->with('error', 'No valid users selected for deletion.');
+        }
+        
+        $deleted = User::whereIn('id', $userIds)->delete();
+        
+        return back()->with('success', "Successfully deleted {$deleted} users.");
     }
 }

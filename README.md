@@ -215,7 +215,7 @@ The following improvements were identified during a comprehensive code review. T
 
 8. **Excessive file permissions** - The `Dockerfile` uses `chmod -R 777` for several directories. Use `775` or `755` instead; 777 is overly permissive and a security risk.
 
-9. **Unnecessary packages in Dockerfile** - The Dockerfile installs `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL), none of which are needed since Nginx runs in a separate container.
+9. `[FIXED]` **Unnecessary packages in Dockerfile** - Removed `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL) from the Dockerfile since Nginx runs in a separate container and Node.js is not used for build steps.
 
 10. `[FIXED]` **Missing queue worker** - A `queue-worker` service has been added to `docker-compose.yml` running `php artisan queue:work redis --sleep=3 --tries=3`.
 

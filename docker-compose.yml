@@ -56,6 +56,22 @@ services:
     networks:
       - vas-network
 
+  queue-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vas-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --sleep=3 --tries=3
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - vas-network
+    depends_on:
+      - redis
+      - db
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: vas-phpmyadmin

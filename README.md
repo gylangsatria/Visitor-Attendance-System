@@ -34,13 +34,14 @@ VAS is a web-based application for visitor management and attendance tracking in
 
 ## System Architecture
 
-VAS uses a multi-container Docker setup with five services:
+VAS uses a multi-container Docker setup with six services:
 
 - **app** - PHP 8.2-FPM container running the Laravel application
 - **web** - Nginx Alpine web server (port 8080)
 - **db** - MySQL 8.0 database server (port 3306)
 - **redis** - Redis for caching and session management
 - **phpmyadmin** - Database management UI (port 8081)
+- **queue-worker** - Redis queue worker running `php artisan queue:work`
 
 ## Installation
 
@@ -216,7 +217,7 @@ The following improvements were identified during a comprehensive code review. T
 
 9. **Unnecessary packages in Dockerfile** - The Dockerfile installs `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL), none of which are needed since Nginx runs in a separate container.
 
-10. **Missing queue worker** - The application is configured to use Redis for the queue (`QUEUE_CONNECTION=redis`), but there is no process running `php artisan queue:work`. Add a queue worker service or supervisor configuration.
+10. `[FIXED]` **Missing queue worker** - A `queue-worker` service has been added to `docker-compose.yml` running `php artisan queue:work redis --sleep=3 --tries=3`.
 
 11. **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` uses raw `echo '<div>...'` statements for error messages instead of Blade syntax. Use `@php` / `@endphp` or Blade directives for consistency.
 

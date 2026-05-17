@@ -213,7 +213,7 @@ The following improvements were identified during a comprehensive code review. T
 
 ### Code Quality and Architecture
 
-8. **Excessive file permissions** - The `Dockerfile` uses `chmod -R 777` for several directories. Use `775` or `755` instead; 777 is overly permissive and a security risk.
+8. `[FIXED]` **Excessive file permissions** - Removed `chmod -R 777` for logs, views, cache, and sessions directories from the Dockerfile. The top-level `chmod -R 775` already applies recursively, and 775 is sufficient since ownership is set to `www-data`.
 
 9. `[FIXED]` **Unnecessary packages in Dockerfile** - Removed `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL) from the Dockerfile since Nginx runs in a separate container and Node.js is not used for build steps.
 

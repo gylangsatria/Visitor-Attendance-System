@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>VAS - @yield('title', 'Visitor & Attendance System')</title>
+    <title>VAS - @yield('title', __('VAS - Visitor & Attendance System'))</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -31,7 +31,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         <h1 class="text-xl font-bold text-indigo-600">VAS</h1>
-                        <span class="ml-2 text-sm text-gray-500 hidden sm:inline-block">Visitor & Attendance System</span>
+                        <span class="ml-2 text-sm text-gray-500 hidden sm:inline-block">{{ __('Visitor & Attendance System') }}</span>
                     </div>
                 </div>
 
@@ -40,19 +40,19 @@
                     @auth
                     <div class="flex space-x-8">
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600 transition">
-                            Dashboard
+                            {{ __('Dashboard') }}
                         </a>
                         <a href="{{ route('attendances.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600 transition">
-                            History Absensi
+                            {{ __('History Absensi') }}
                         </a>
                         @if(auth()->user()->access_level !== 4)
                         <a href="{{ route('visitors.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600 transition">
-                            Visitors
+                            {{ __('Visitors') }}
                         </a>
                         @endif
                         @if(auth()->user()->canEdit())
                         <a href="{{ route('users.index') }}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-indigo-600 transition">
-                            Manajemen User
+                            {{ __('Manajemen User') }}
                         </a>
                         @endif
                     </div>
@@ -65,13 +65,16 @@
                     <span class="text-sm text-gray-600">
                         <i class="fas fa-user-tag"></i> {{ auth()->user()->access_level_name }}
                     </span>
+                    <a href="{{ route('language.switch', ['locale' => app()->getLocale() === 'id' ? 'en' : 'id']) }}" class="text-gray-600 hover:text-indigo-600 transition text-sm">
+                        <i class="fas fa-globe"></i> {{ app()->getLocale() === 'id' ? __('English') : __('Indonesian') }}
+                    </a>
                     <a href="{{ route('profile.show') }}" class="text-gray-700 hover:text-indigo-600 transition">
                         <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-red-600 hover:text-red-800 transition">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                            <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
                         </button>
                     </form>
                     @endauth
@@ -79,8 +82,11 @@
 
                 <!-- Mobile Menu Button -->
                 @auth
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-2" aria-label="Toggle menu">
+                <div class="md:hidden flex items-center gap-2">
+                    <a href="{{ route('language.switch', ['locale' => app()->getLocale() === 'id' ? 'en' : 'id']) }}" class="text-gray-600 hover:text-indigo-600 transition text-xs px-2 py-1 border rounded">
+                        {{ app()->getLocale() === 'id' ? 'EN' : 'ID' }}
+                    </a>
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-2" aria-label="{{ __('Toggle menu') }}">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -93,7 +99,7 @@
         <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 h-full w-64 bg-white shadow-xl z-50 md:hidden">
             <div class="p-4 border-b border-gray-200">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-indigo-600">Menu</h2>
+                    <h2 class="text-xl font-bold text-indigo-600">{{ __('Menu') }}</h2>
                     <button id="close-menu-button" class="text-gray-600 hover:text-gray-900">
                         <i class="fas fa-times text-xl"></i>
                     </button>
@@ -109,29 +115,29 @@
             <div class="p-4">
                 <div class="space-y-3">
                     <a href="{{ route('dashboard') }}" class="block py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded px-2 transition">
-                        <i class="fas fa-tachometer-alt w-6"></i> Dashboard
+                        <i class="fas fa-tachometer-alt w-6"></i> {{ __('Dashboard') }}
                     </a>
                     <a href="{{ route('attendances.index') }}" class="block py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded px-2 transition">
-                        <i class="fas fa-history w-6"></i> History Absensi
+                        <i class="fas fa-history w-6"></i> {{ __('History Absensi') }}
                     </a>
                     @if(auth()->user()->access_level !== 4)
                     <a href="{{ route('visitors.index') }}" class="block py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded px-2 transition">
-                        <i class="fas fa-users w-6"></i> Visitors
+                        <i class="fas fa-users w-6"></i> {{ __('Visitors') }}
                     </a>
                     @endif
                     @if(auth()->user()->canEdit())
                     <a href="{{ route('users.index') }}" class="block py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded px-2 transition">
-                        <i class="fas fa-user-cog w-6"></i> Manajemen User
+                        <i class="fas fa-user-cog w-6"></i> {{ __('Manajemen User') }}
                     </a>
                     @endif
                     <a href="{{ route('profile.show') }}" class="block py-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded px-2 transition">
-                        <i class="fas fa-user w-6"></i> Profile
+                        <i class="fas fa-user w-6"></i> {{ __('Profile') }}
                     </a>
                     <hr class="my-3">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full text-left py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded px-2 transition">
-                            <i class="fas fa-sign-out-alt w-6"></i> Logout
+                            <i class="fas fa-sign-out-alt w-6"></i> {{ __('Logout') }}
                         </button>
                     </form>
                 </div>

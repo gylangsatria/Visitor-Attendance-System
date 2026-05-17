@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Visitors')
+@section('title', __('Visitors'))
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-4 sm:p-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-        <h3 class="text-lg font-semibold">Visitor List</h3>
+        <h3 class="text-lg font-semibold">{{ __('Visitor List') }}</h3>
         
         @if(auth()->user()->access_level !== 4)
         <a href="{{ route('visitors.create') }}" class="bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-700 transition flex items-center gap-1.5 text-sm">
             <i class="fas fa-plus text-xs"></i>
-            <span>Register Visitor</span>
+            <span>{{ __('Register Visitor') }}</span>
         </a>
         @endif
     </div>
@@ -29,7 +29,7 @@
                         <input type="text" 
                                name="search" 
                                value="{{ request('search') }}" 
-                               placeholder="Search by name, phone, or person to meet..." 
+                               placeholder="{{ __('Search by name, phone, or person to meet...') }}" 
                                class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                 </div>
@@ -37,9 +37,9 @@
                 <!-- Filter by Status -->
                 <div class="sm:w-36">
                     <select name="status" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">All Status</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="">{{ __('All Status') }}</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ __('Completed') }}</option>
                     </select>
                 </div>
             </div>
@@ -66,12 +66,12 @@
                 <div class="flex gap-2 sm:ml-auto">
                     <button type="submit" class="px-4 py-1.5 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition flex items-center gap-1.5">
                         <i class="fas fa-filter text-xs"></i>
-                        <span>Filter</span>
+                        <span>{{ __('Filter') }}</span>
                     </button>
                     
                     <a href="{{ route('visitors.index') }}" class="px-4 py-1.5 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition flex items-center gap-1.5">
                         <i class="fas fa-undo-alt text-xs"></i>
-                        <span>Reset</span>
+                        <span>{{ __('Reset') }}</span>
                     </a>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             <!-- Result Count -->
             <div class="text-xs text-gray-500 pt-1">
                 <i class="fas fa-chart-line mr-1 text-xs"></i>
-                Showing {{ $visitors->firstItem() ?? 0 }} - {{ $visitors->lastItem() ?? 0 }} of {{ $visitors->total() }} records
+                {{ __('Showing') }} {{ $visitors->firstItem() ?? 0 }} - {{ $visitors->lastItem() ?? 0 }} {{ __('of') }} {{ $visitors->total() }} {{ __('records') }}
             </div>
         </form>
     </div>
@@ -89,12 +89,12 @@
         <table class="min-w-full">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Person to Meet</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Phone') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Person to Meet') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Check In') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -121,12 +121,12 @@
                     <td class="px-4 py-3 whitespace-nowrap">
                         <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ $visitor->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                             <i class="fas {{ $visitor->status == 'active' ? 'fa-circle' : 'fa-check-circle' }} mr-1 text-xs"></i>
-                            {{ $visitor->status == 'active' ? 'Active' : 'Checked Out' }}
+                            {{ $visitor->status == 'active' ? __('Active') : __('Completed') }}
                         </span>
                     </td>
                     <td class="px-4 py-3 whitespace-nowrap text-sm">
                         <div class="flex items-center gap-2">
-                            <a href="{{ route('visitors.show', $visitor) }}" class="text-indigo-600 hover:text-indigo-900 transition" title="View">
+                            <a href="{{ route('visitors.show', $visitor) }}" class="text-indigo-600 hover:text-indigo-900 transition" title="{{ __('View') }}">
                                 <i class="fas fa-eye"></i>
                             </a>
                             
@@ -134,7 +134,7 @@
                                 @if($visitor->status == 'active')
                                 <form method="POST" action="{{ route('visitors.checkout', $visitor) }}" class="inline">
                                     @csrf
-                                    <button type="submit" class="text-red-600 hover:text-red-900 transition" title="Check Out" onclick="return confirm('Check out this visitor?')">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 transition" title="{{ __('Check Out') }}" onclick="return confirm('{{ __('Check Out') }}?')">
                                         <i class="fas fa-sign-out-alt"></i>
                                     </button>
                                 </form>
@@ -148,8 +148,8 @@
                     <td colspan="6" class="px-4 py-8 text-center text-gray-500">
                         <div class="flex flex-col items-center">
                             <i class="fas fa-users text-3xl text-gray-400 mb-2"></i>
-                            <p class="text-sm">No visitors found.</p>
-                            <p class="text-xs mt-1">Try adjusting your search or filter criteria.</p>
+                            <p class="text-sm">{{ __('No visitors found.') }}</p>
+                            <p class="text-xs mt-1">{{ __('Try adjusting your search or filter criteria.') }}</p>
                         </div>
                     </td>
                 </tr>

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Attendance History')
+@section('title', __('Attendance History'))
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-4 sm:p-6">
-    <h3 class="text-lg font-semibold mb-4">Attendance History</h3>
+    <h3 class="text-lg font-semibold mb-4">{{ __('Attendance History') }}</h3>
     
     <!-- Search and Filter Section -->
     <div class="mb-6">
@@ -20,7 +20,7 @@
                         <input type="text" 
                                name="search" 
                                value="{{ request('search') }}" 
-                               placeholder="Search by user or notes..." 
+                               placeholder="{{ __('Search by user or notes...') }}" 
                                class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                 </div>
@@ -28,9 +28,9 @@
                 <!-- Filter by Type -->
                 <div class="sm:w-36">
                     <select name="type" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">All Types</option>
-                        <option value="check_in" {{ request('type') == 'check_in' ? 'selected' : '' }}>Check In</option>
-                        <option value="check_out" {{ request('type') == 'check_out' ? 'selected' : '' }}>Check Out</option>
+                        <option value="">{{ __('All Types') }}</option>
+                        <option value="check_in" {{ request('type') == 'check_in' ? 'selected' : '' }}>{{ __('Check In') }}</option>
+                        <option value="check_out" {{ request('type') == 'check_out' ? 'selected' : '' }}>{{ __('Check Out') }}</option>
                     </select>
                 </div>
             </div>
@@ -57,12 +57,12 @@
                 <div class="flex gap-2 sm:ml-auto">
                     <button type="submit" class="px-4 py-1.5 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition flex items-center gap-1.5">
                         <i class="fas fa-filter text-xs"></i>
-                        <span>Filter</span>
+                        <span>{{ __('Filter') }}</span>
                     </button>
                     
                     <a href="{{ route('attendances.index') }}" class="px-4 py-1.5 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition flex items-center gap-1.5">
                         <i class="fas fa-undo-alt text-xs"></i>
-                        <span>Reset</span>
+                        <span>{{ __('Reset') }}</span>
                     </a>
                 </div>
             </div>
@@ -70,7 +70,7 @@
             <!-- Result Count (compact) -->
             <div class="text-xs text-gray-500 pt-1">
                 <i class="fas fa-chart-line mr-1 text-xs"></i>
-                Showing {{ $attendances->firstItem() ?? 0 }} - {{ $attendances->lastItem() ?? 0 }} of {{ $attendances->total() }} records
+                {{ __('Showing') }} {{ $attendances->firstItem() ?? 0 }} - {{ $attendances->lastItem() ?? 0 }} {{ __('of') }} {{ $attendances->total() }} {{ __('records') }}
             </div>
         </form>
     </div>
@@ -81,12 +81,12 @@
             <thead class="bg-gray-50">
                 <tr>
                     @if(auth()->user()->isAdmin() || auth()->user()->isEditor())
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('User') }}</th>
                     @endif
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Type') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Date & Time') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('IP Address') }}</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Notes') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -103,7 +103,7 @@
                     <td class="px-4 py-3 whitespace-nowrap">
                         <span class="px-2 py-0.5 text-xs font-medium rounded-full {{ $attendance->type == 'check_in' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                             <i class="fas {{ $attendance->type == 'check_in' ? 'fa-sign-in-alt' : 'fa-sign-out-alt' }} mr-1 text-xs"></i>
-                            {{ $attendance->type == 'check_in' ? 'Check In' : 'Check Out' }}
+                            {{ $attendance->type == 'check_in' ? __('Check In') : __('Check Out') }}
                         </span>
                     </td>
                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
@@ -123,8 +123,8 @@
                     <td colspan="{{ auth()->user()->isAdmin() || auth()->user()->isEditor() ? 5 : 4 }}" class="px-4 py-8 text-center text-gray-500">
                         <div class="flex flex-col items-center">
                             <i class="fas fa-inbox text-3xl text-gray-400 mb-2"></i>
-                            <p class="text-sm">No attendance records found.</p>
-                            <p class="text-xs mt-1">Try adjusting your search or filter criteria.</p>
+                            <p class="text-sm">{{ __('No attendance records found.') }}</p>
+                            <p class="text-xs mt-1">{{ __('Try adjusting your search or filter criteria.') }}</p>
                         </div>
                     </td>
                 </tr>

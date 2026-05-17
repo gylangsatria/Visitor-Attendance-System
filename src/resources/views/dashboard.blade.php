@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', __('Dashboard'))
 
 @section('content')
 <div class="space-y-6">
@@ -13,7 +13,7 @@
                     <i class="fas fa-calendar-check text-indigo-600 text-2xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-gray-500 text-sm">Absensi Hari Ini</p>
+                    <p class="text-gray-500 text-sm">{{ __('Absensi Hari Ini') }}</p>
                     <p class="text-2xl font-bold text-gray-800">{{ $today_attendance ?? 0 }}</p>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                     <i class="fas fa-users text-green-600 text-2xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-gray-500 text-sm">Visitor Hari Ini</p>
+                    <p class="text-gray-500 text-sm">{{ __('Visitor Hari Ini') }}</p>
                     <p class="text-2xl font-bold text-gray-800">{{ $today_visitors ?? 0 }}</p>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                     <i class="fas fa-user-clock text-yellow-600 text-2xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-gray-500 text-sm">Visitor Aktif</p>
+                    <p class="text-gray-500 text-sm">{{ __('Visitor Aktif') }}</p>
                     <p class="text-2xl font-bold text-gray-800">{{ $active_visitors ?? 0 }}</p>
                 </div>
             </div>
@@ -47,14 +47,14 @@
     
     <!-- Quick Actions -->
     <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-4 text-gray-800">Quick Actions</h3>
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">{{ __('Quick Actions') }}</h3>
         <div class="flex flex-col sm:flex-row gap-3">
             <!-- Check In Button -->
             <form method="POST" action="{{ route('attendance.check-in') }}" class="flex-1">
                 @csrf
                 <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Check In</span>
+                    <span>{{ __('Check In') }}</span>
                 </button>
             </form>
             
@@ -63,7 +63,7 @@
                 @csrf
                 <button type="submit" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span>Check Out</span>
+                    <span>{{ __('Check Out') }}</span>
                 </button>
             </form>
             
@@ -71,7 +71,7 @@
             @if(auth()->user()->access_level !== 4)
             <a href="{{ route('visitors.create') }}" class="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-center">
                 <i class="fas fa-user-plus"></i>
-                <span>Register Visitor</span>
+                <span>{{ __('Register Visitor') }}</span>
             </a>
             @endif
         </div>
@@ -81,16 +81,16 @@
     @if(isset($recent_activities) && count($recent_activities) > 0)
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800">Recent Activities</h3>
+            <h3 class="text-lg font-semibold text-gray-800">{{ __('Recent Activities') }}</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('User') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Type') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Time') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('IP Address') }}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -114,16 +114,16 @@
     @elseif(isset($my_attendances) && count($my_attendances) > 0)
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800">My Recent Attendances</h3>
+            <h3 class="text-lg font-semibold text-gray-800">{{ __('My Recent Attendances') }}</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Type') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Time') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('IP Address') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Notes') }}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">

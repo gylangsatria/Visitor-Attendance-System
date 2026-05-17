@@ -188,57 +188,59 @@ docker logs vas-nginx
 
 ## Code Review Findings
 
-The following improvements were identified during a comprehensive code review. They are grouped by priority.
+The following improvements were identified during a comprehensive code review. They are grouped by priority. Items marked as `[FIXED]` have already been resolved.
 
 ### Bugs (High Priority)
 
-1. **Duplicate visitor route declaration** - In `routes/web.php`, `Route::resource('/visitors', VisitorController::class)` is declared twice (lines 22 and 27). This may cause route conflicts or errors. Remove the duplicate declaration.
+1. `[FIXED]` **Duplicate visitor route declaration** - In `routes/web.php`, `Route::resource('/visitors', VisitorController::class)` was declared twice. The duplicate declaration has been removed.
 
-2. **Visitor status filter mismatch** - In `resources/views/visitors/index.blade.php`, the status filter option uses the value `checked_out`, but the `VisitorController@checkOut` method sets the status to `completed`. The filter will never match any records. Change the filter option value to `completed` or update the controller to use `checked_out` consistently.
+2. `[FIXED]` **Visitor status filter mismatch** - The status filter option in `visitors/index.blade.php` used the value `checked_out`, but the controller sets status to `completed`. The filter value has been changed to `completed`.
+
+3. `[FIXED]` **Missing DatabaseSeeder** - File `database/seeders/DatabaseSeeder.php` was missing, causing `php artisan db:seed` to fail. The file has been added and calls the `UserSeeder`.
 
 ### Security
 
-3. **CORS overly permissive** - `config/cors.php` allows all origins (`*`). For production, restrict this to specific domains that need access.
+4. **CORS overly permissive** - `config/cors.php` allows all origins (`*`). For production, restrict this to specific domains that need access.
 
-4. **Debug mode enabled in production** - `.env` has `APP_DEBUG=true` and `LOG_LEVEL=debug`, which can leak sensitive information. Set `APP_DEBUG=false` and `LOG_LEVEL=warning` for production.
+5. **Debug mode enabled in production** - `.env` has `APP_DEBUG=true` and `LOG_LEVEL=debug`, which can leak sensitive information. Set `APP_DEBUG=false` and `LOG_LEVEL=warning` for production.
 
-5. **Weak default passwords** - All seeder accounts use `password123`. Use stronger passwords or generate random credentials for production.
+6. **Weak default passwords** - All seeder accounts use `password123`. Use stronger passwords or generate random credentials for production.
 
-6. **Database and Redis ports exposed to host** - In `docker-compose.yml`, MySQL (3306) and Redis (6379) ports are mapped to the host. Remove these port mappings for production environments to reduce attack surface.
+7. **Database and Redis ports exposed to host** - In `docker-compose.yml`, MySQL (3306) and Redis (6379) ports are mapped to the host. Remove these port mappings for production environments to reduce attack surface.
 
 ### Code Quality and Architecture
 
-7. **Excessive file permissions** - The `Dockerfile` uses `chmod -R 777` for several directories. Use `775` or `755` instead; 777 is overly permissive and a security risk.
+8. **Excessive file permissions** - The `Dockerfile` uses `chmod -R 777` for several directories. Use `775` or `755` instead; 777 is overly permissive and a security risk.
 
-8. **Unnecessary packages in Dockerfile** - The Dockerfile installs `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL), none of which are needed since Nginx runs in a separate container.
+9. **Unnecessary packages in Dockerfile** - The Dockerfile installs `nginx`, `nodejs`, `npm`, and `libpq-dev` (PostgreSQL), none of which are needed since Nginx runs in a separate container.
 
-9. **Missing queue worker** - The application is configured to use Redis for the queue (`QUEUE_CONNECTION=redis`), but there is no process running `php artisan queue:work`. Add a queue worker service or supervisor configuration.
+10. **Missing queue worker** - The application is configured to use Redis for the queue (`QUEUE_CONNECTION=redis`), but there is no process running `php artisan queue:work`. Add a queue worker service or supervisor configuration.
 
-10. **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` uses raw `echo '<div>...'` statements for error messages instead of Blade syntax. Use `@php` / `@endphp` or Blade directives for consistency.
+11. **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` uses raw `echo '<div>...'` statements for error messages instead of Blade syntax. Use `@php` / `@endphp` or Blade directives for consistency.
 
-11. **Redundant access checks in VisitorController** - Methods `create()` and `store()` manually check `access_level === 4` even though the constructor middleware `access:1,2,3` already handles this for those methods.
+12. **Redundant access checks in VisitorController** - Methods `create()` and `store()` manually check `access_level === 4` even though the constructor middleware `access:1,2,3` already handles this for those methods.
 
-12. **Incomplete CSV export** - The `export()` method in `VisitorController` writes to `php://output` but does not set proper HTTP response headers, so the download will not work correctly.
+13. **Incomplete CSV export** - The `export()` method in `VisitorController` writes to `php://output` but does not set proper HTTP response headers, so the download will not work correctly.
 
-13. **No soft deletes** - The User and Visitor models do not use Laravel's `SoftDeletes` trait. When a user is deleted, related attendance and visitor records are cascade-deleted, causing data loss.
+14. **No soft deletes** - The User and Visitor models do not use Laravel's `SoftDeletes` trait. When a user is deleted, related attendance and visitor records are cascade-deleted, causing data loss.
 
 ### User Experience
 
-14. **Profile editing restricted** - `ProfileController` only allows levels 1 and 2 to edit profiles. Users at levels 3 (Staff) and 4 (Attendee) cannot update their own profile information.
+15. **Profile editing restricted** - `ProfileController` only allows levels 1 and 2 to edit profiles. Users at levels 3 (Staff) and 4 (Attendee) cannot update their own profile information.
 
-15. **Missing autocomplete attributes** - The login form does not have `autocomplete` attributes on email and password inputs, which may hinder password manager usage.
+16. **Missing autocomplete attributes** - The login form does not have `autocomplete` attributes on email and password inputs, which may hinder password manager usage.
 
-16. **Inconsistent language** - The UI mixes Indonesian ("Absensi Hari Ini") and English ("Register Visitor"). Choose one language and apply it consistently across all views.
+17. **Inconsistent language** - The UI mixes Indonesian ("Absensi Hari Ini") and English ("Register Visitor"). Choose one language and apply it consistently across all views.
 
 ### Docker and Deployment
 
-17. **No health checks** - Services in `docker-compose.yml` lack `healthcheck` configurations. The app container may attempt to connect to the database before it is ready.
+18. **No health checks** - Services in `docker-compose.yml` lack `healthcheck` configurations. The app container may attempt to connect to the database before it is ready.
 
-18. **Nginx lacks optimization** - `nginx/default.conf` is minimal. Add gzip compression, security headers (X-Frame-Options, X-Content-Type-Options), and cache control for static assets.
+19. **Nginx lacks optimization** - `nginx/default.conf` is minimal. Add gzip compression, security headers (X-Frame-Options, X-Content-Type-Options), and cache control for static assets.
 
-19. **No task scheduler** - There is no cron job configured to run `php artisan schedule:run`. Any scheduled tasks will not execute.
+20. **No task scheduler** - There is no cron job configured to run `php artisan schedule:run`. Any scheduled tasks will not execute.
 
-20. **Missing .env.example** - The file `.env.example` is referenced in the quick start instructions but does not exist in the `src/` directory.
+21. **Missing .env.example** - The file `.env.example` is referenced in the quick start instructions but does not exist in the `src/` directory.
 
 ## What Works Well
 

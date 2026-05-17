@@ -3,35 +3,29 @@
 @section('title', __('Edit User'))
 
 @section('content')
-@php
-    $currentUser = auth()->user();
-    
-    if ($currentUser->access_level === 2 && $user->access_level === 1) {
-        echo '<div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">' . __('Access Denied') . '!</strong>
-                <span class="block sm:inline ml-2">' . __('Editor cannot edit Admin users.') . '</span>
-              </div>';
-        echo '<div class="mt-4 text-center">
-                <a href="' . route('users.index') . '" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-                    ' . __('Back to List') . '
-                </a>
-              </div>';
-        return;
-    }
-    
-    if ($currentUser->access_level === 2 && $user->access_level === 2) {
-        echo '<div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">' . __('Access Denied') . '!</strong>
-                <span class="block sm:inline ml-2">' . __('Editor cannot edit other Editor users.') . '</span>
-              </div>';
-        echo '<div class="mt-4 text-center">
-                <a href="' . route('users.index') . '" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-                    ' . __('Back to List') . '
-                </a>
-              </div>';
-        return;
-    }
-@endphp
+@php $currentUser = auth()->user(); @endphp
+
+@if($currentUser->access_level === 2 && $user->access_level === 1)
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">{{ __('Access Denied') }}!</strong>
+        <span class="block sm:inline ml-2">{{ __('Editor cannot edit Admin users.') }}</span>
+    </div>
+    <div class="mt-4 text-center">
+        <a href="{{ route('users.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+            {{ __('Back to List') }}
+        </a>
+    </div>
+@elseif($currentUser->access_level === 2 && $user->access_level === 2)
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">{{ __('Access Denied') }}!</strong>
+        <span class="block sm:inline ml-2">{{ __('Editor cannot edit other Editor users.') }}</span>
+    </div>
+    <div class="mt-4 text-center">
+        <a href="{{ route('users.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+            {{ __('Back to List') }}
+        </a>
+    </div>
+@else
 
 <div class="bg-white rounded-lg shadow p-4 sm:p-6 max-w-2xl mx-auto">
     <h3 class="text-lg font-semibold mb-4">{{ __('Edit User') }}: {{ $user->name }}</h3>
@@ -119,4 +113,5 @@
         </div>
     </form>
 </div>
+@endif
 @endsection

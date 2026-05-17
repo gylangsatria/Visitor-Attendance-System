@@ -219,7 +219,7 @@ The following improvements were identified during a comprehensive code review. T
 
 10. `[FIXED]` **Missing queue worker** - A `queue-worker` service has been added to `docker-compose.yml` running `php artisan queue:work redis --sleep=3 --tries=3`.
 
-11. **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` uses raw `echo '<div>...'` statements for error messages instead of Blade syntax. Use `@php` / `@endphp` or Blade directives for consistency.
+11. `[FIXED]` **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` has been refactored to use proper Blade `@if` / `@elseif` / `@else` / `@endif` directives instead of raw `echo` statements.
 
 12. **Redundant access checks in VisitorController** - Methods `create()` and `store()` manually check `access_level === 4` even though the constructor middleware `access:1,2,3` already handles this for those methods.
 

@@ -11,6 +11,7 @@ VAS is a web-based application for visitor management and attendance tracking in
 - Dashboard Overview - Real-time statistics and recent activities
 - Responsive Design - Mobile-friendly interface with Tailwind CSS
 - Export to CSV - Export visitor data for reporting
+- Multi-language Support - Toggle between English and Indonesian
 
 ## Access Levels
 
@@ -56,6 +57,7 @@ visitor-attendance-system/
     app/                  Application core (Controllers, Models, Middleware)
     config/               Configuration files
     database/             Migrations and seeders
+    lang/                 Language files (en.json, id.json)
     resources/            Views (Blade templates)
     routes/               Web and API routes
     storage/              Logs, cache, sessions
@@ -228,9 +230,9 @@ The following improvements were identified during a comprehensive code review. T
 
 15. **Profile editing restricted** - `ProfileController` only allows levels 1 and 2 to edit profiles. Users at levels 3 (Staff) and 4 (Attendee) cannot update their own profile information.
 
-16. **Missing autocomplete attributes** - The login form does not have `autocomplete` attributes on email and password inputs, which may hinder password manager usage.
+16. `[FIXED]` **Missing autocomplete attributes** - The login form did not have `autocomplete` attributes on email and password inputs. Autocomplete attributes have been added.
 
-17. **Inconsistent language** - The UI mixes Indonesian ("Absensi Hari Ini") and English ("Register Visitor"). Choose one language and apply it consistently across all views.
+17. `[FIXED]` **Inconsistent language** - The UI previously mixed Indonesian and English. Full localization support has been implemented with English and Indonesian via Laravel's `__()` helper and JSON language files. A language switcher is available on all pages.
 
 ### Docker and Deployment
 
@@ -256,3 +258,5 @@ The following aspects of the project are already implemented well:
 - Docker-based multi-container architecture for easy deployment
 - Avatar upload with public storage disk
 - CSRF protection on all web routes
+- Multi-language support with English and Indonesian localization
+- Language switcher in navigation bar and login page

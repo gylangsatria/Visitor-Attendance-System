@@ -38,12 +38,11 @@
             <ul class="text-xs mt-2 space-y-1">
                 <li class="text-center">admin@vas.com / password123</li>
             </ul>
-        </div>
-
-        <div class="mt-4 text-center">
-            <a href="{{ route('language.switch', ['locale' => app()->getLocale() === 'id' ? 'en' : 'id']) }}" class="text-indigo-600 hover:text-indigo-800 text-sm">
-                <i class="fas fa-globe"></i> {{ app()->getLocale() === 'id' ? __('English') : __('Indonesian') }}
-            </a>
+            <div class="mt-3 text-center border-t pt-3">
+                <a href="{{ route('language.switch', ['locale' => app()->getLocale() === 'id' ? 'en' : 'id']) }}" class="text-indigo-600 hover:text-indigo-800 text-xs">
+                    <i class="fas fa-globe"></i> {{ app()->getLocale() === 'id' ? __('English') : __('Indonesian') }}
+                </a>
+            </div>
         </div>
     </div>
 </div>

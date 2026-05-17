@@ -33,7 +33,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/visitors', VisitorController::class);
     Route::resource('/attendances', AttendanceController::class);
 
-    // Route untuk visitors
-    Route::resource('/visitors', VisitorController::class);
-    Route::post('/visitors/{visitor}/checkout', [VisitorController::class, 'checkOut'])->name('visitors.checkout'); // Perhatikan: checkOut (huruf O besar);
+    // Checkout visitor
+    Route::post('/visitors/{visitor}/checkout', [VisitorController::class, 'checkOut'])->name('visitors.checkout');
 });

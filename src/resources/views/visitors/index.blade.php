@@ -7,12 +7,20 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
         <h3 class="text-lg font-semibold">{{ __('Visitor List') }}</h3>
         
-        @if(auth()->user()->access_level !== 4)
-        <a href="{{ route('visitors.create') }}" class="bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-700 transition flex items-center gap-1.5 text-sm">
-            <i class="fas fa-plus text-xs"></i>
-            <span>{{ __('Register Visitor') }}</span>
-        </a>
-        @endif
+        <div class="flex items-center gap-2">
+            @if(auth()->user()->isAdmin() || auth()->user()->isEditor())
+            <a href="{{ route('visitors.export', request()->query()) }}" class="bg-green-600 text-white px-4 py-1.5 rounded hover:bg-green-700 transition flex items-center gap-1.5 text-sm">
+                <i class="fas fa-download text-xs"></i>
+                <span>CSV</span>
+            </a>
+            @endif
+            @if(auth()->user()->access_level !== 4)
+            <a href="{{ route('visitors.create') }}" class="bg-indigo-600 text-white px-4 py-1.5 rounded hover:bg-indigo-700 transition flex items-center gap-1.5 text-sm">
+                <i class="fas fa-plus text-xs"></i>
+                <span>{{ __('Register Visitor') }}</span>
+            </a>
+            @endif
+        </div>
     </div>
     
     <!-- Search and Filter Section -->

@@ -141,24 +141,16 @@ class VisitorController extends Controller
         return redirect()->route('visitors.index')->with('success', 'Visitor checked out successfully!');
     }
     
-    // Optional: Method untuk export data (bonus)
     public function export(Request $request)
     {
         $user = auth()->user();
-        
-        // Hanya admin dan editor yang bisa export
+
         if (!$user->isAdmin() && !$user->isEditor()) {
             abort(403, 'Unauthorized access.');
         }
-        
-        // Build query sama seperti index
-        if ($user->isAdmin() || $user->isEditor()) {
-            $query = Visitor::with('registrar');
-        } else {
-            $query = Visitor::where('registered_by', $user->id);
-        }
-        
-        // Apply filters
+
+        $query = Visitor::with('registrar');
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -167,61 +159,55 @@ class VisitorController extends Controller
                   ->orWhere('person_to_meet', 'like', "%{$search}%");
             });
         }
-        
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-        
+
         if ($request->filled('start_date')) {
             $query->whereDate('check_in_time', '>=', $request->start_date);
         }
-        
+
         if ($request->filled('end_date')) {
             $query->whereDate('check_in_time', '<=', $request->end_date);
         }
-        
+
         $visitors = $query->orderBy('check_in_time', 'desc')->get();
-        
-        // Export to CSV
         $filename = 'visitors_export_' . date('Y-m-d_His') . '.csv';
-        $handle = fopen('php://output', 'w');
-        
-        // Add CSV headers
-        fputcsv($handle, [
-            'ID', 'Name', 'Email', 'Phone', 'ID Card Number', 'Company', 
-            'Purpose', 'Person to Meet', 'Check In Time', 'Check Out Time', 
-            'Status', 'Registered By'
-        ]);
-        
-        // Add data rows
-        foreach ($visitors as $visitor) {
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($visitors) {
+            $handle = fopen('php://output', 'w');
             fputcsv($handle, [
-                $visitor->id,
-                $visitor->name,
-                $visitor->email,
-                $visitor->phone,
-                $visitor->id_card_number,
-                $visitor->company,
-                $visitor->purpose,
-                $visitor->person_to_meet,
-                $visitor->check_in_time,
-                $visitor->check_out_time,
-                $visitor->status,
-                $visitor->registrar->name ?? 'N/A'
+                'ID', 'Name', 'Email', 'Phone', 'ID Card Number', 'Company',
+                'Purpose', 'Person to Meet', 'Check In Time', 'Check Out Time',
+                'Status', 'Registered By'
             ]);
-        }
-        
-        fclose($handle);
-        
-        return response()->stream(
-            function() use ($filename, $visitors) {
-                // Implementation above
-            },
-            200,
-            [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            ]
-        );
+
+            foreach ($visitors as $visitor) {
+                fputcsv($handle, [
+                    $visitor->id,
+                    $visitor->name,
+                    $visitor->email,
+                    $visitor->phone,
+                    $visitor->id_card_number,
+                    $visitor->company,
+                    $visitor->purpose,
+                    $visitor->person_to_meet,
+                    $visitor->check_in_time,
+                    $visitor->check_out_time,
+                    $visitor->status,
+                    $visitor->registrar->name ?? 'N/A'
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

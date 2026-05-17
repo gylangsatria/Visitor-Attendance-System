@@ -222,7 +222,7 @@ The following improvements were identified during a comprehensive code review. T
 
 12. **Redundant access checks in VisitorController** - Methods `create()` and `store()` manually check `access_level === 4` even though the constructor middleware `access:1,2,3` already handles this for those methods.
 
-13. **Incomplete CSV export** - The `export()` method in `VisitorController` writes to `php://output` but does not set proper HTTP response headers, so the download will not work correctly.
+13. `[FIXED]` **Incomplete CSV export** - The `export()` method in `VisitorController` now uses `response()->stream()` with proper CSV headers. An export button and route have been added.
 
 14. **No soft deletes** - The User and Visitor models do not use Laravel's `SoftDeletes` trait. When a user is deleted, related attendance and visitor records are cascade-deleted, causing data loss.
 

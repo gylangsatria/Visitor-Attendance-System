@@ -38,4 +38,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Checkout visitor
     Route::post('/visitors/{visitor}/checkout', [VisitorController::class, 'checkOut'])->name('visitors.checkout');
+
+    // Export visitors to CSV
+    Route::get('/visitors/export/csv', [VisitorController::class, 'export'])->name('visitors.export');
 });

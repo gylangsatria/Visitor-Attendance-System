@@ -221,7 +221,7 @@ The following improvements were identified during a comprehensive code review. T
 
 11. `[FIXED]` **Raw PHP echo in Blade template** - `resources/views/users/edit.blade.php` has been refactored to use proper Blade `@if` / `@elseif` / `@else` / `@endif` directives instead of raw `echo` statements.
 
-12. **Redundant access checks in VisitorController** - Methods `create()` and `store()` manually check `access_level === 4` even though the constructor middleware `access:1,2,3` already handles this for those methods.
+12. `[FIXED]` **Redundant access checks in VisitorController** - Removed duplicate `access_level === 4` checks from `create()` and `store()` methods since the constructor middleware `access:1,2,3` already handles access control for those methods.
 
 13. `[FIXED]` **Incomplete CSV export** - The `export()` method in `VisitorController` now uses `response()->stream()` with proper CSV headers. An export button and route have been added.
 

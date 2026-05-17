@@ -64,21 +64,11 @@ class VisitorController extends Controller
 
     public function create()
     {
-        // Cek apakah Guest (level 4)
-        if (auth()->user()->access_level === 4) {
-            abort(403, 'Guest users cannot register visitors.');
-        }
-        
         return view('visitors.create');
     }
 
     public function store(Request $request)
     {
-        // Cek apakah Guest (level 4)
-        if (auth()->user()->access_level === 4) {
-            abort(403, 'Guest users cannot register visitors.');
-        }
-        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
